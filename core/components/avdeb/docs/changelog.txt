@@ -1,0 +1,7 @@
+Changelog for AVDEB Products
+
+AVDEB Products 1.0.0-pl (2026-11-22)
+====================================
+- First release: AvdebProducts, AvdebProduct and AvdebButton snippets, {avdeb-products ...} tags in any content (plugin), system settings for the referral code, secret key and display defaults.
+- Grid, carousel, list and spotlight layouts; horizontal, hero and card single products; referral buttons; &tpl chunks for your own markup.
+- Products cached in the MODX cache (partition "avdeb"); the last good copy is shown for a week if AVDEB can't be reached. Clearing the site cache refreshes them.

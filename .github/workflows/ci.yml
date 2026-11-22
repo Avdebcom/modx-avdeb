@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl
+          coverage: none
+      - name: Lint
+        run: find core _build tests -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+      - name: Unit tests
+        run: php tests/run.php
+
+  modx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Fresh MODX 3 site: build and install the transport package, render pages against the live
+      # AVDEB API, clear the cache, uninstall.
+      - run: tests/smoke.sh
+      - name: Build the package artifact
+        run: AVDEB_REF_CODE= tests/dev-site.sh avdeb-modx-pkg 8098 && docker rm -f avdeb-modx-pkg avdeb-modx-pkg-db
+      - uses: actions/upload-artifact@v4
+        with:
+          name: avdeb-transport-package
+          path: _packages/*.transport.zip
